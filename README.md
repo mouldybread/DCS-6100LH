@@ -1,5 +1,5 @@
 # Hacking the D-Link DCS-6100LH
-
+![DCS-6100LH](DCS-6100LH_A1_Image_front.png)
 ## Intro
 
 The D-Link DCS-6100LH is a 2MP Wifi-only 5V IP Camera in a decent hardware package. D-Link advertises this model with RTSP but provides no information and has apparently stripped the local RTSP functionality from the device via forced firmware upgrades, allowing only remote access to the camera feed via their app and website.
