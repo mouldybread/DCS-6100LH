@@ -64,7 +64,9 @@ Next I tried to use the instructions from bmorks defogger[^2] to get a root cons
 
 As luck would have it I did, direct from D-Link. Not only that but the recovery mode allowed me to downgrade the firmware. Earlier versions have much more verbose output from their RTSP server and I was eventually able to figure out a working stream URL.
 
+The Taiwanese D-Link support portal also links to versions of the firmware[^3]
 
 [^0]: https://media.dlink.eu/support/products/dcs/dcs-6100lh/documentation/dcs-6100lh_qig_reva1_1-00_eu_multi_20201102.pdf
 [^1]: https://github.com/wuseman/DLink_6100LH/
 [^2]: https://github.com/bmork/defogger#u-boot
+[^3]: https://www.dlinktw.com.tw/techsupport/ProductInfo.aspx?m=DCS-6100LH
