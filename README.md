@@ -50,7 +50,7 @@ The quickstart guide[^0] says:
 
 However: if you do so when the device is turned on it will instead go into recovery mode - allowing direct upload of firmware via a recovery portal as outlined above. What the guide doesn't say is that to initiate a factory reset you need to press the recessed reset button *while* you connect the power.
 
-After onboarding I discovered the device wouldn't function without a working internet connection and also didn't expose anything to do with RTSP. Unless your d-link. In Which case it happily streams RTSP offsite where they kindly allow us peons to stream it via their servers in an app or web browser. 
+After onboarding I discovered the device wouldn't function without a working internet connection and also didn't expose anything to do with RTSP. Unless you are d-link. In Which case it happily streams RTSP offsite where they kindly allow us peons to stream it via their servers in an app or web browser. 
 
 I initially attempted to gain root access via the hardware pins[^1]. 
 	
