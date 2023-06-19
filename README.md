@@ -1,8 +1,20 @@
 # Hacking the D-Link DCS-6100LH
 ![DCS-6100LH](DCS-6100LH_A1_Image_front.png)
+
+## TL:DR
+
+RTSP VLC Stream url:<br>
+  rtsp://@192.168.0.20:554/live/profile.1/video<br>
+  rtsp://@192.168.0.20:554/live/profile.0/video<br><br>
+Inline credentials are deprecated. You will be prompted for a username and password:<br>
+Username: admin<br>
+Password: pincode from the bottom of your device<br><br>
+The camera outputs 1920x1080@15fps<br><br>
+Pincode can be recovered by flashing old firmware which has a bunch of debugging stuff left on. There seems to be no difference between the two URLs. The RTSP stream seems to work on newer versions of the firmware[^4].
+
 ## Intro
 
-The D-Link DCS-6100LH is a 2MP Wifi-only 5V IP Camera in a decent hardware package. D-Link advertises this model with RTSP but provides no information and has apparently stripped the local RTSP functionality from the device via forced firmware upgrades, allowing only remote access to the camera feed via their app and website.
+The D-Link DCS-6100LH is a 2MP Wifi-only 5V IP Camera in a decent hardware package. ~~D-Link advertises this model with RTSP but provides no information and has apparently stripped the local RTSP functionality from the device via forced firmware upgrades, allowing only remote access to the camera feed via their app and website[^5].~~ D-Link support either doesn't know that these cameras serve RTSP or doesn't want customers to know[^4]. 
 
 My camera arrived with firmware version 1.04.05(3.5.23-b01)
 
@@ -10,20 +22,10 @@ I can confirm the RTSP stream works after downgrading to version 1.01 of the fir
 
 Downgrading also enabled debugging output (accessed via TX and RX pins on the board) which allowed me to isolate the stream url. The stream url does not match any other published URLs. 
 
-I only needed this one simple thing(thanks d-link), so I won't be upgrading to newer firmware to test if it is just a case of nobody knowing the url. It may still work after upgrading as nmap shows the port is still open. If you test this on later firmware and it works please let me know.
+~~I only needed this one simple thing(thanks d-link), so I won't be upgrading to newer firmware to test if it is just a case of nobody knowing the url. It may still work after upgrading as nmap shows the port is still open. If you test this on later firmware and it works please let me know.~~ Seems like the RTSP url works on newer versions of the firmware[^4].
 
 **As always: messing around with the firmware of these things risks irreparably bricking them. You do so at your own risk. I can't help if things go wrong.**
 
-## TL:DR
-
-RTSP VLC Stream url:<br>
-  rtsp://@192.168.3.53:554/live/profile.1/video
-
-Inline credentials are deprecated. You will be prompted for a username and password:<br>
-Username: admin<br>
-Password: pincode from the bottom of your device<br>
-
-Pincode can be recovered by flashing old firmware which has a bunch of debugging stuff left on.
 
 ## Firmware downgrade
 
@@ -73,3 +75,5 @@ The Taiwanese D-Link support portal also links to versions of the firmware[^3]
 [^1]: https://github.com/wuseman/DLink_6100LH/
 [^2]: https://github.com/bmork/defogger#u-boot
 [^3]: https://www.dlinktw.com.tw/techsupport/ProductInfo.aspx?m=DCS-6100LH
+[^4]: https://github.com/mouldybread/DCS-6100LH/issues/1
+[^5]: https://community.home-assistant.io/t/anybody-hacked-adapted-d-link-dcs-6500lh/412703/6
