@@ -10,19 +10,15 @@ Inline credentials are deprecated. You will be prompted for a username and passw
 Username: admin<br>
 Password: pincode from the bottom of your device<br><br>
 The camera outputs 1920x1080@15fps<br><br>
-Pincode can be recovered by flashing old firmware which has a bunch of debugging stuff left on. There seems to be no difference between the two URLs. The RTSP stream seems to work on newer versions of the firmware[^4].
+Pincode can be recovered by flashing old firmware which has a bunch of debugging stuff left on. There seems to be no difference between the two URLs. The RTSP stream seems to work on all versions of the firmware[^4].
 
 ## Intro
 
-The D-Link DCS-6100LH is a 2MP Wifi-only 5V IP Camera in a decent hardware package. ~~D-Link advertises this model with RTSP but provides no information and has apparently stripped the local RTSP functionality from the device via forced firmware upgrades, allowing only remote access to the camera feed via their app and website[^5].~~ D-Link support either doesn't know that these cameras serve RTSP or doesn't want customers to know[^4]. 
+The D-Link DCS-6100LH is a 2MP Wifi-only 5V IP Camera in a decent hardware package. <br>
 
-My camera arrived with firmware version 1.04.05(3.5.23-b01)
+Despite D-Link support claims to the contrary [^5] these devices ship with a working rtsp stream. This stream has been confirmed to be available on all versions of the firmware, 1.01-1.04 as of writing[^4].
 
-I can confirm the RTSP stream works after downgrading to version 1.01 of the firmware, allowing me to use the camera with Home Assistant. It is possible to do so without hardware modification.
-
-Downgrading also enabled debugging output (accessed via TX and RX pins on the board) which allowed me to isolate the stream url. The stream url does not match any other published URLs. 
-
-~~I only needed this one simple thing(thanks d-link), so I won't be upgrading to newer firmware to test if it is just a case of nobody knowing the url. It may still work after upgrading as nmap shows the port is still open. If you test this on later firmware and it works please let me know.~~ Seems like the RTSP url works on newer versions of the firmware[^4].
+The RTSP stream url was recovered by downgrading to version 1.01 of the firmware which also provides much more verbose console output. The stream url does not match any other published URLs. Downgrading should also allow recovery of the device pin. Downgrading is possible without hardware modification. Console access is achieved via RX and TX pins on the board.
 
 **As always: messing around with the firmware of these things risks irreparably bricking them. You do so at your own risk. I can't help if things go wrong.**
 
@@ -31,6 +27,8 @@ In order to use the mydlink-app to setup the device it needs to be in setup mode
 Setup mode is indicate by the LED flashing orange (not red).
 Setup mode can be acheived by, while the device is powered on, pressing the reset button for about one second.
 After some time the LED should start flashing orange. Be patient.
+
+You must use the mydlink-app to connect the device to your wifi. However it seems that you can blacklist the mydlink domain or presumably block the device in your firewall and it will remain connected to your wifi[^6].
 
 ## Firmware downgrade
 
@@ -52,8 +50,8 @@ You can then upload a firmware file, which you can download from:<br>
 If those links fail, then you can also find the firmware via their GPL portal, page 5 as of writing:<br>
 	https://tsd.dlink.com.tw/downloads2008list.asp?t=1&Category=Product%20Data%20II%3EIP%20Surveillance%3EIP%20Cameras&pagetype=G
 
-## The long story:
-As usual, onboarding the device was painful. It required full internet access to complete the process and a mydlink account. My device wasn't new so it needed to be reset. 
+## Other notes
+As usual, onboarding the device was painful.~~It required full internet access to complete the process and a mydlink account.~~ My device wasn't new so it needed to be reset. 
 
 The quickstart guide[^0] says: 
 	"Reset and reinstall your device. Use a paperclip to press the recessed Reset button and the LED will turn solid red"
@@ -83,3 +81,4 @@ The Taiwanese D-Link support portal also links to versions of the firmware[^3]
 [^3]: https://www.dlinktw.com.tw/techsupport/ProductInfo.aspx?m=DCS-6100LH
 [^4]: https://github.com/mouldybread/DCS-6100LH/issues/1
 [^5]: https://community.home-assistant.io/t/anybody-hacked-adapted-d-link-dcs-6500lh/412703/6
+[^6]: https://github.com/mouldybread/DCS-6100LH/issues/3
