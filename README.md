@@ -26,14 +26,22 @@ Downgrading also enabled debugging output (accessed via TX and RX pins on the bo
 
 **As always: messing around with the firmware of these things risks irreparably bricking them. You do so at your own risk. I can't help if things go wrong.**
 
+## How to enter setup mode
+In order to use the mydlink-app to setup the device it needs to be in setup mode.
+Setup mode is indicate by the LED flashing orange (not red).
+Setup mode can be acheived by, while the device is powered on, pressing the reset button for about one second.
+After some time the LED should start flashing orange. Be patient.
 
 ## Firmware downgrade
 
 It is possible to boot the device into recovery mode and downgrade the firmware as of firmware version 1.04.05
 
-Allow the device to boot and use a pin to hold down the reset button for around 10 seconds. The device will boot into AP mode. You can then connect to the camera's wifi access point using the password on the sticker on the base of the device(not the pin).
+Allow the device to boot and use a pin to hold down the reset button for around 10 seconds. 
+The device will boot into firmware recovery mode indicate by that the LED is flashing red (not orange). 
+It will expose itself as an access point with the name DCS-6100LH-XXXX, where XXXX is the last four characters of the units MAC. 
+You can then connect to the camera's wifi access point using the password on the sticker on the base of the device (not the pin).
 
-The onboard DHCP server will give you an IP resembling 192.168.0.40. You can access the recovery interface at http://192.168.0.20/<br>
+The onboard DHCP server will give you an IP resembling 192.168.0.40. You can access the recovery interface at http://192.168.0.20:80<br>
 
 You can then upload a firmware file, which you can download from:<br>
   [DCS-6100LH A1 V1.00](https://pmdap.dlink.com.tw/PMD/GetAgileFile?itemNumber=FIR2000285&fileName=DCS6100LHAx_FW100B09.bin&fileSize=673988.0;1085472.0;)<br>
@@ -49,8 +57,6 @@ As usual, onboarding the device was painful. It required full internet access to
 
 The quickstart guide[^0] says: 
 	"Reset and reinstall your device. Use a paperclip to press the recessed Reset button and the LED will turn solid red"
-
-However: if you do so when the device is turned on it will instead go into recovery mode - allowing direct upload of firmware via a recovery portal as outlined above. What the guide doesn't say is that to initiate a factory reset you need to press the recessed reset button *while* you connect the power.
 
 After onboarding I discovered the device wouldn't function without a working internet connection and also didn't expose anything to do with RTSP. Unless you are d-link. In Which case it happily streams RTSP offsite where they kindly allow us peons to stream it via their servers in an app or web browser. 
 
