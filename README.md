@@ -1,7 +1,9 @@
 # Hacking the D-Link DCS-6100LH
-![DCS-6100LH](DCS-6100LH_A1_Image_front.png)
+<p align="center">
+  <img src="DCS-6100LH_A1_Image_front.png" width="350" title="hover text">
+</p>
 
-## TL:DR
+## Basic information
 
 RTSP VLC Stream url:<br>
   rtsp://@192.168.0.20:554/live/profile.1/video<br>
@@ -29,7 +31,6 @@ Setup mode can be acheived by, while the device is powered on, pressing the rese
 After some time the LED should start flashing orange. Be patient.
 
 You must use the mydlink-app to connect the device to your wifi. However it seems that you can blacklist the mydlink domain or presumably block the device in your firewall and it will remain connected to your wifi[^6].
-
 ## Firmware downgrade
 
 It is possible to boot the device into recovery mode and downgrade the firmware as of firmware version 1.04.05
@@ -50,7 +51,150 @@ You can then upload a firmware file, which you can download from:<br>
 If those links fail, then you can also find the firmware via their GPL portal, page 5 as of writing:<br>
 	https://tsd.dlink.com.tw/downloads2008list.asp?t=1&Category=Product%20Data%20II%3EIP%20Surveillance%3EIP%20Cameras&pagetype=G
 
-## Other notes
+# Accessing & configuring the device via Serial/Telnet 
+
+As of writing the device can be rooted without issue. See issue [#9](https://github.com/mouldybread/DCS-6100LH/issues/9) for pin locations.
+
+## Obtaining root password
+    "DCS-6100LH-MACADDRESS"
+
+Replace MACADDRESS with the mac address for your camera (for example: "DCS-6100LH-B0C5546518E7")
+
+The mac address can be found on the quick start guide or the underside of the camera.
+
+Put that through a md5 hash generator and the first 8 characters of the hash should be the root password
+###### With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)
+## Disable OSD
+Open SystemConfig.ini
+
+Find the OSD section and set OsdDisplayEnable to 0
+
+    OsdDisplayEnable = 0
+
+This will disable the overlay
+###### With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)
+## Disable LED
+Open SystemConfig.ini
+
+Find The Mydlink Section
+
+Set light_status to 0
+
+    light_status = 0
+###### With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)
+
+## Enable telnet
+
+
+Open /mnt/mtd/boot.sh
+
+Comment out the following (near line 140):
+
+    /etc/init.d/S50telnet stop
+
+This will prevent the telnet daemon from being stopped
+###### With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)
+
+## Telnet & Busybox
+The camera uses busybox, the syntax for the various commands can be found here: https://busybox.net/downloads/BusyBox.html
+
+### Transferring files
+
+    tftp -p -l SystemConfig.ini 192.168.xxx.xxx
+
+The above command sends a file to a tftp server at address: 192.168.xxx.xxx
+
+### Receiving files
+
+     tftp -g -r test.txt 192.168.xxx.xxx
+
+The above command gets a file from a tftp server at address: 192.168.xxx.xxx
+###### With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)
+## Disable cloud functions
+     vi /mydlink/mydlink_watchdog.sh
++ press i, add exit under #!/bin/sh, press esc, type :wq and press enter
+
+>Needs to be checked, from looking at it in ghidra these are the cloud services - somehow the streamer still reported occasional connections from an Orange ASN, could be a bug or my network equipment
+###### With thanks to [DSchndr](https://github.com/DSchndr) and as noted in [#8](https://github.com/mouldybread/DCS-6100LH/issues/8)
+## Alternative root access 
+
++ connect uart (115200, near the usb port)
+
++ press a button to stop uboot from booting and then
+
+```
+    setenv bootargs console=ttyS1,9600 init=/bin/sh root=/dev/mtdblock3 rts-quadspi.channels=dual mtdparts=18030000.spic:16384k@0(global),320k@0k(boot),2304k@320k(kernel),3584k@2624k(rootfs),7744k@6208k(userdata),2048k@13952k(userdata2),384k@16000k(userdata3)
+```
++ boot
+
++ change baud rate to 9600
+
++ passwd root 2x enter and you've opened pandoras box
+
++ reboot afterwards
+
++ enable telenet
+###### With thanks to [DSchndr](https://github.com/DSchndr) and as noted in [#8](https://github.com/mouldybread/DCS-6100LH/issues/8)
+
+## Configure wifi without app
+Open
+```
+    vi /mnt/conf/SystemConfig.ini
+```
+Edit as follows
+  ```
+    WIFI_SECURITY_TYPE = 5 WIFI_SSID = [B64-Encoded] WIFI_PWD = [B64-Encoded] register_st = 1
+  ```
+Reboot
+
+###### With thanks to [DSchndr](https://github.com/DSchndr) and as noted in [#8](https://github.com/mouldybread/DCS-6100LH/issues/8)
+
+## RTSP Stream Login & Password
+Stored in /mnt/conf/SystemConfig.ini
+
+###### With thanks to [DSchndr](https://github.com/DSchndr) and as noted in [#8](https://github.com/mouldybread/DCS-6100LH/issues/8)
+
+
+## Decrypting update package
++ Hold the reset button for 5 seconds, go to the firmware recovery page
++ Upload the firmware you want the keys for (they probably come from da_adaptor, seed is quite obvious in the header of the update file)
++ Seed, Key and IV plop out on the Serial port - decrypt with openssl aes-128-cbc -d -p -nopad -K "KEY" -iv "IV" -S "SEED" -in UPDATE.bin -out dec.bin 
++ Use binwalk to explore the package
+
+###### With thanks to [DSchndr](https://github.com/DSchndr) and as noted in [#8](https://github.com/mouldybread/DCS-6100LH/issues/8)
+
+## Misc notes & Information
+
+### Hardware details
+cat cpuinfo outputs the following:
+```
+    system type : Formosa
+    machine : RTS3903N EVB
+    processor : 0
+    cpu model : Taroko V0.2 FPU V0.1
+    BogoMIPS : 497.66
+    wait instruction : no
+    microsecond timers : yes
+    tlb_entries : 64
+    extra interrupt vector : no
+    hardware watchpoint : no
+    isa : mips1
+    ASEs implemented : mips16
+    shadow register sets : 1
+    kscratch registers : 0
+    package : 0
+    core : 0
+    VCED exceptions : not available
+    VCEI exceptions : not available
+```
+cat version outputs the following:
+```
+    Linux version 4.9.51 (root@ubuntu) (gcc version 6.4.1 20180425 (Realtek RSDK-6.4.1 Build 3029) ) #78 Wed May 6 20:32:31 CST 2020
+```
+
+###### With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9):
+### Initial notes
+
 As usual, onboarding the device was painful.~~It required full internet access to complete the process and a mydlink account.~~ My device wasn't new so it needed to be reset. 
 
 The quickstart guide[^0] says: 
