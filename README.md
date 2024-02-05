@@ -53,7 +53,11 @@ If those links fail, then you can also find the firmware via their GPL portal, p
 
 # Accessing & configuring the device via Serial/Telnet 
 
-As of writing the device can be rooted without issue. See issue [#9](https://github.com/mouldybread/DCS-6100LH/issues/9) for pin locations.
+As of writing the device can be rooted without issue.
+
+A serial console gan be achieved by opening up the camera. See issue [#9](https://github.com/mouldybread/DCS-6100LH/issues/9) for pin locations.
+
+A remote shell can be achieved thanks to an RCE exploit that has been found thanks to grocid. https://gist.github.com/grocid/becaff3b0c7bef3edcb5801b70b7af21
 
 ## Obtaining root password
     "DCS-6100LH-MACADDRESS"
@@ -64,7 +68,7 @@ The mac address can be found on the quick start guide or the underside of the ca
 
 Put that through a md5 hash generator and the first 8 characters of the hash should be the root password
 
-<sub> With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
+<sub> With thanks to [AlixCozmo](https://github.com/AlixCozmo) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
 
 ## Disable OSD
 Open SystemConfig.ini
@@ -75,7 +79,7 @@ Find the OSD section and set OsdDisplayEnable to 0
 
 This will disable the overlay
 
-<sub> With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
+<sub> With thanks to [AlixCozmo](https://github.com/AlixCozmo) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
 
 ## Disable LED
 Open SystemConfig.ini
@@ -86,7 +90,7 @@ Set light_status to 0
 
     light_status = 0
 
-<sub> With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
+<sub> With thanks to [AlixCozmo](https://github.com/AlixCozmo) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
 
 ## Enable telnet
 
@@ -99,9 +103,9 @@ Comment out the following (near line 140):
 
 This will prevent the telnet daemon from being stopped
 
-<sub> With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9) </sub>
+<sub> With thanks to [AlixCozmo](https://github.com/AlixCozmo) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9) </sub>
 
-## Telnet & Busybox
+## Tftp & Busybox
 The camera uses busybox, the syntax for the various commands can be found here: https://busybox.net/downloads/BusyBox.html
 
 ### Transferring files
@@ -116,7 +120,11 @@ The above command sends a file to a tftp server at address: 192.168.xxx.xxx
 
 The above command gets a file from a tftp server at address: 192.168.xxx.xxx
 
-<sub> With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
+Note: You need a tftp server to transfer and receive files from the camera. 
+
+If using windows, this is an option https://pjo2.github.io/tftpd64/
+
+<sub> With thanks to [AlixCozmo](https://github.com/AlixCozmo) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
 
 ## Disable cloud functions
      vi /mydlink/mydlink_watchdog.sh
@@ -204,7 +212,7 @@ cat version outputs the following:
     Linux version 4.9.51 (root@ubuntu) (gcc version 6.4.1 20180425 (Realtek RSDK-6.4.1 Build 3029) ) #78 Wed May 6 20:32:31 CST 2020
 ```
 
-<sub> With thanks to [DavidByggerBilar](https://github.com/DavidByggerBilar) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
+<sub> With thanks to [AlixCozmo](https://github.com/AlixCozmo) and as noted in [#9](https://github.com/mouldybread/DCS-6100LH/issues/9)</sub>
 ### Initial notes
 
 As usual, onboarding the device was painful.~~It required full internet access to complete the process and a mydlink account.~~ My device wasn't new so it needed to be reset. 
